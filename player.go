@@ -11,22 +11,39 @@ type Player struct {
 	pos   vec2
 }
 
-func Player(p vec2, q *ebiten.Image) *Player {
+func NewPlayer(p vec2, q *ebiten.Image) *Player {
 	return &Player{pos: p, image: q}
 }
 
-func (c *Player) Update(playerpos vec2) {
-	if c.pos.DistanceTo(playerpos) < 16 && !c.collected {
-		fmt.Println("You collected a Player. Yay ")
-		c.collected = true
+func (p *Player) Update() {
+	speed := 32.0 / ebiten.ActualTPS()
+	var delta vec2
+	//WASD
+	if ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD) {
+		delta.X += 1
 	}
+	if ebiten.IsKeyPressed(ebiten.KeyLeft) || ebiten.IsKeyPressed(ebiten.KeyA) {
+		delta.X -= 1
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyUp) || ebiten.IsKeyPressed(ebiten.KeyW) {
+		delta.Y -= 1
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyDown) || ebiten.IsKeyPressed(ebiten.KeyS) {
+		delta.Y += 1
+	}
+
+	if delta.X != 0 || delta.Y != 0 {
+		delta = delta.Normalized()
+		delta = delta.Multiply(speed)
+		fmt.Println(delta)
+		p.pos = delta.Added(p.pos)
+	}
+
 }
 
-func (c *Player) Draw(screen *ebiten.Image) {
-	if !c.collected {
-		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Scale(1, 1)
-		op.GeoM.Translate(c.pos.X, c.pos.Y)
-		screen.DrawImage(c.image, op)
-	}
+func (p *Player) Draw(screen *ebiten.Image) {
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Scale(1, 1)
+	op.GeoM.Translate(p.pos.X, p.pos.Y)
+	screen.DrawImage(p.image, op)
 }

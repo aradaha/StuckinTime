@@ -26,7 +26,7 @@ func (c *Coin) Update(playerpos vec2) {
 func (c *Coin) Draw(screen *ebiten.Image) {
 	if !c.collected {
 		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Scale(0.75, 0.75)
+		op.GeoM.Scale(1, 1)
 		op.GeoM.Translate(c.pos.X, c.pos.Y)
 		screen.DrawImage(c.image, op)
 	}
