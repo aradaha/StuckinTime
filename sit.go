@@ -1,7 +1,6 @@
 package main
 
 import (
-	"image"
 	"math/rand"
 
 	"log"
@@ -16,20 +15,21 @@ const (
 
 type Game2 struct {
 	image     *ebiten.Image
-	character *ebiten.Image
 	coins     []*Coin
 	player    *Player
+	goblin    *Goblin
+	tilesheet *Tilesheet
 }
 
 func (g *Game2) Init() {
 	n := 3
 
 	g.image, _, _ = ebitenutil.NewImageFromFile("assets/Tilesheet/colored_packed.png")
-	g.character = g.image.SubImage(image.Rect(19*tileSize, 7*tileSize, 20*tileSize, 8*tileSize)).(*ebiten.Image)
-	coinimage := g.image.SubImage(image.Rect(41*tileSize, 3*tileSize, 42*tileSize, 4*tileSize)).(*ebiten.Image)
-	g.player = NewPlayer(vec2{100, 100}, g.character)
+	g.tilesheet = NewTilesheet(g.image, tileSize)
+	g.player = NewPlayer(vec2{100, 100}, g.tilesheet.GetTile(19, 7))
+	g.goblin = NewGoblin(vec2{50, 50}, g.tilesheet.GetTile(29, 2))
 	for i := 0; i < n; i++ {
-		g.coins = append(g.coins, NewCoin(vec2{float64(rand.Intn(80) + 20), float64(rand.Intn(80) + 20)}, coinimage))
+		g.coins = append(g.coins, NewCoin(vec2{float64(rand.Intn(80) + 20), float64(rand.Intn(80) + 20)}, g.tilesheet.GetTile(41, 3)))
 	}
 
 }
@@ -37,6 +37,7 @@ func (g *Game2) Init() {
 func (g *Game2) Update() error {
 
 	g.player.Update()
+	g.goblin.Update()
 	for _, v := range g.coins {
 		v.Update(g.player.pos)
 	}
@@ -49,6 +50,7 @@ func (g *Game2) Draw(screen *ebiten.Image) {
 	for _, v := range g.coins {
 		v.Draw(screen)
 	}
+	g.goblin.Draw(screen)
 	g.player.Draw(screen)
 }
 
