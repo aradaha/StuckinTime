@@ -20,6 +20,7 @@ func (c *Coin) Update(playerpos vec2) {
 	if c.pos.DistanceTo(playerpos) < 16 && !c.collected {
 		fmt.Println("You collected a coin. Yay ")
 		c.collected = true
+		coinscollected += 1
 	}
 }
 
