@@ -46,7 +46,15 @@ func (g *Game2) Init() {
 	for x := 0; x < 20; x++ {
 		g.backgroundtiles = append(g.backgroundtiles, make([]*ebiten.Image, 0))
 		for y := 0; y < 15; y++ {
-			tile := g.tilesheet.GetTile(rand.Intn(7), 0)
+			draw := rand.Intn(99)
+			var tile *ebiten.Image
+			if draw < 50 {
+				tile = g.tilesheet.GetTile(rand.Intn(4), 0)
+			} else if draw < 85 {
+				tile = g.tilesheet.GetTile(rand.Intn(2)+5, 0)
+			} else {
+				tile = g.tilesheet.GetTile(rand.Intn(5), 1)
+			}
 			//tile := ts.image.SubImage(image.Rect(x*g.tilesize, y*g.tilesize, (x+1)*ts.tilesize, (y+1)*ts.tilesize)).(*ebiten.Image)
 			g.backgroundtiles[x] = append(g.backgroundtiles[x], tile)
 		}
